@@ -613,6 +613,10 @@ So before we fill out our dialogs, we need to have some responses ready. Remembe
         {
             await context.SendActivityAsync($"Posting your picture(s) on twitter...");
         }
+        public static async Task ReplyWithSearchConfirmation(ITurnContext context)
+        {
+            await context.SendActivityAsync($"Searching your picture(s) on twitter...");
+        }
         public static async Task ReplyWithOrderConfirmation(ITurnContext context)
         {
             await context.SendActivityAsync($"Ordering standard prints of your picture(s)...");
