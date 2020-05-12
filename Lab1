@@ -88,7 +88,7 @@ While the first lab focuses on the [Computer Vision](https://www.microsoft.com/c
 
 1. [ ] Select **Create**
 
-1. [ ] Navigate to the new resource, select **Quick Start**
+1. [ ] Navigate to the new resource, select **Keys and Endpoint**
 
 1. [ ] Copy the **API Key** and the **url of the endpoint** to your notepad
 
@@ -184,6 +184,22 @@ https://marketplace.visualstudio.com/items?itemName=BotBuilder.botbuilderv4
 
 1. [ ] Select **Close**. You should now have the bot templates added to your Visual Studio templates.
 
+##### Task 2: Visual  Studio
+
+1. [ ] Start **Visual Studio 2019 Community Edition**
+
+1. [ ] Select **General**
+
+1. [ ] Sign in with your Azure credentials
+
+##### Task 3: .Net Core Runtime 2.2
+
+1. [ ] Download .NET Core 2.2 Runtime by going to the following URL and downloading the most recent version of the .NET Core that has the tag "2.2.8" or higher (select the "Windows x64" file, if you are using windows).
+
+ ```cli
+https://dotnet.microsoft.com/download/dotnet-core/2.2
+ ```
+
 #### Exercise 3: Bot Emulator
 
 @@@secondary
@@ -194,7 +210,7 @@ We will be developing a bot using the latest .NET SDK (v4).  In order to do loca
 
 You can download the v4 Bot Framework Emulator for testing your bot locally. The instructions for the rest of the labs will assume you've downloaded the v4 Emulator.
 
-1. [ ] Download the emulator by going to the following URL  and downloading the most recent version of the emulator that has the tag "4.6.0" or higher (select the "*-windows-setup.exe" file, if you are using windows).
+1. [ ] Download the emulator by going to the following URL and downloading the most recent version of the emulator that has the tag "4.6.0" or higher (select the "*-windows-setup.exe" file, if you are using windows).
 
  ```cli
 https://github.com/Microsoft/BotFramework-Emulator/releases
