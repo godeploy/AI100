@@ -123,13 +123,15 @@ A bot created using the Microsoft Bot Framework can be hosted at any publicly-ac
 1. [ ] Right-click the **Bots/Echobot.cs** file, then select **Rename**, rename the class file to **PictureBot.cs**
 
 1. [ ] Rename the class and then change all references to the class to **PictureBot**.  You will know if you missed one when you attempt to build the project.
+@@@warning
+**Note** If you see the error PictureBot is a namespace but is used liike a type, then change PictureBot to PictureBot.Bots.PictureBot
+@@@
 
 1. [ ] Right-click the project, select **Manage Nuget Packagaes**
 
 1. [ ] Click the **Browse** tab, and install the following packages, ensure that you are using version **4.6.3**:
 
   * Microsoft.Bot.Builder.Azure
-  
   * Microsoft.Bot.Builder.AI.Luis
   * Microsoft.Bot.Builder.Dialogs
   * Microsoft.Azure.Search (version, 10.1.0 or later)
@@ -165,24 +167,24 @@ A few things to **Note**
 
 To interact with your bot:
 
-* Launch the Bot Framework Emulator (note we are using the v4 Emulator).  Click **Start**, then search for **Bot Emulator**.
+1. [ ] Launch the Bot Framework Emulator (note we are using the v4 Emulator).  Click **Start**, then search for **Bot Emulator**.
 
-* On the welcome page, click **Create a new bot configuration**
+1. [ ] On the welcome page, click **Create a new bot configuration**
 
-*  For the name, type **PictureBot**
+1. [ ] For the name, type **PictureBot**
 
-*  Enter the url that is displayed on your bot web page
+1. [ ] Enter the url that is displayed on your bot web page
 
-*  Enter the AppId and the App Secret your entered into the appsettings.json
+1. [ ] Enter the AppId and the App Secret your entered into the appsettings.json
 @@@warning
 **Note** If you do not enter id and secret values into the bot settings you would also not need to enter the values in the bot emulator
 @@@
 
-*  Click **Save and connect**, then save your .bot file locally
+1. [ ] Click **Save and connect**, then save your .bot file locally
 
 * You should now be able to converse with the bot.
 
-* Type **hello**. The bot will respond with echoing your message similar to the Azure bot we created earlier.
+1. [ ] Type **hello**. The bot will respond with echoing your message similar to the Azure bot we created earlier.
 @@@warning
 **Note** You can select "Restart conversation" to clear the conversation history.
 @@@
@@ -202,6 +204,8 @@ To interact with your bot:
 
   - **PictureBot.cs**: The `OnMessageActivityAsync` method is the entry point which waits for a message from the user is where we can react to a message once received and wait for further messages.  We can use `turnContext.SendActivityAsync` to send a message from the bot back to the user.
 
+1. [ ] Stop debugging
+
 #### Lab 3.2:  Managing state and services
 
 1. [ ] Navigate again to the **Startup.cs** file
@@ -218,7 +222,6 @@ To interact with your bot:
  using Microsoft.Extensions.Options;
  using Microsoft.Extensions.Logging;
  using Microsoft.PictureBot;
-
  using Microsoft.Bot.Builder.AI.Luis;
  using Microsoft.Bot.Builder.Dialogs;
  ```
@@ -258,7 +261,7 @@ private ILoggerFactory _loggerFactory;
 private bool _isProduction = false;
  ```
 
-2. [ ] Replace the code in the **ConfigureServices** method:
+1. [ ] Replace the code in the **ConfigureServices** method:
 
  ```csharp
 services.AddTransient<IBot, PictureBot.Bots.PictureBot>();
@@ -266,56 +269,39 @@ services.AddTransient<IBot, PictureBot.Bots.PictureBot>();
 with the following code:
 
  ```csharp
- services.AddBot<PictureBot.Bots.PictureBot>(options =>
- {
-     var appId = Configuration.GetSection("MicrosoftAppId")?.Value;
-                 var appSecret = Configuration.GetSection("MicrosoftAppPassword")?.Value;
+services.AddBot<PictureBot.Bots.PictureBot>(options =>
+{
+    //Add code below
 
-                 options.CredentialProvider = new SimpleCredentialProvider(appId, appSecret);
+});
+ ```
+1. [ ] Add the following code to where indicated:
 
-     // Creates a logger for the application to use.
-     ILogger logger = _loggerFactory.CreateLogger<PictureBot.Bots.PictureBot>();
+```csharp
+var appId = Configuration.GetSection("MicrosoftAppId")?.Value;
+var appSecret = Configuration.GetSection("MicrosoftAppPassword")?.Value;
+options.CredentialProvider = new SimpleCredentialProvider(appId, appSecret);
 
-     // Catches any errors that occur during a conversation turn and logs them.
-     options.OnTurnError = async (context, exception) =>
-     {
-         logger.LogError($"Exception caught : {exception}");
-         await context.SendActivityAsync("Sorry, it looks like something went wrong.");
-     };
+ILogger logger = _loggerFactory.CreateLogger<PictureBot.Bots.PictureBot>();
 
-     // The Memory Storage used here is for local bot debugging only. When the bot
-     // is restarted, everything stored in memory will be gone.
-     IStorage dataStore = new MemoryStorage(); 
+options.OnTurnError = async (context, exception) =>
+{
+    logger.LogError($"Exception caught : {exception}");
+    await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+};
 
-     // For production bots use the Azure Blob or
-     // Azure CosmosDB storage providers. For the Azure
-     // based storage providers, add the Microsoft.Bot.Builder.Azure
-     // Nuget package to your solution. That package is found at:
-     // https://www.nuget.org/packages/Microsoft.Bot.Builder.Azure/
-     // Uncomment the following lines to use Azure Blob Storage
-     // //Storage configuration name or ID from the .bot file.
-     // const string StorageConfigurationId = "<STORAGE-NAME-OR-ID-FROM-BOT-FILE>";
-     // var blobConfig = botConfig.FindServiceByNameOrId(StorageConfigurationId);
-     // if (!(blobConfig is BlobStorageService blobStorageConfig))
-     // {
-     //    throw new InvalidOperationException($"The .bot file does not contain an blob storage with name '{StorageConfigurationId}'.");
-     // }
-     // // Default container name.
-     // const string DefaultBotContainer = "botstate";
-     // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
-     // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
+IStorage dataStore = new MemoryStorage(); 
 
-     // Create Conversation State object.
-     // The Conversation State object is where we persist anything at the conversation-scope.
-     var conversationState = new ConversationState(dataStore);
+var conversationState = new ConversationState(dataStore);
 
-     options.State.Add(conversationState);
+options.State.Add(conversationState);
 
-     var middleware = options.Middleware;
-     // Add middleware below with "middleware.Add(...."
-     // Add Regex below
+var middleware = options.Middleware;
 
- });
+// Add middleware below with "middleware.Add(...."
+
+// Add Regex below
+
  ```
 
 1. [ ] Replace the **Configure** method with the following code:
@@ -404,21 +390,13 @@ For each accessor we create, we have to first give it a property name. For our s
 1. [ ] Copy the following code into **PictureState.cs**.
 
  ```csharp
- using System.Collections.Generic;
+using System.Collections.Generic;
 
- namespace Microsoft.PictureBot
- {
-    /// <summary>
+namespace Microsoft.PictureBot
+{
     /// Stores counter state for the conversation.
-    /// Stored in <see cref="Microsoft.Bot.Builder.ConversationState"/> and
-    /// backed by <see cref="Microsoft.Bot.Builder.MemoryStorage"/>.
-    /// </summary>
     public class PictureState
     {
-        /// <summary>
-        /// Gets or sets the number of turns in the conversation.
-        /// </summary>
-        /// <value>The number of turns in the conversation.</value>
         public string Greeted { get; set; } = "not greeted";
         public string Search { get; set; } = "";
         public string Searching { get; set; } = "no";
@@ -433,55 +411,27 @@ For each accessor we create, we have to first give it a property name. For our s
 1. [ ] Copy the following into it:
 
  ```csharp
- using System;
- using Microsoft.Bot.Builder;
- using Microsoft.Bot.Builder.Dialogs;
+using System;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 
- namespace Microsoft.PictureBot
- {
-    /// <summary>
-    /// This class is created as a Singleton and passed into the IBot-derived constructor.
-    ///  - See <see cref="PictureBot"/> constructor for how that is injected.
-    ///  - See the Startup.cs file for more details on creating the Singleton that gets
-    ///    injected into the constructor.
-    /// </summary>
+namespace Microsoft.PictureBot
+{
     public class PictureBotAccessors
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PictureBotAccessors"/> class.
-        /// Contains the <see cref="ConversationState"/> and associated <see cref="IStatePropertyAccessor{T}"/>.
-        /// </summary>
-        /// <param name="conversationState">The state object that stores the counter.</param>
         public PictureBotAccessors(ConversationState conversationState)
         {
             ConversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
         }
 
-        /// <summary>
-        /// Gets the <see cref="IStatePropertyAccessor{T}"/> name used for the <see cref="CounterState"/> accessor.
-        /// </summary>
-        /// <remarks>Accessors require a unique name.</remarks>
-        /// <value>The accessor name for the counter accessor.</value>
         public static string PictureStateName { get; } = $"{nameof(PictureBotAccessors)}.PictureState";
 
-        /// <summary>
-        /// Gets or sets the <see cref="IStatePropertyAccessor{T}"/> for CounterState.
-        /// </summary>
-        /// <value>
-        /// The accessor stores the turn count for the conversation.
-        /// </value>
         public IStatePropertyAccessor<PictureState> PictureState { get; set; }
 
-        /// <summary>
-        /// Gets the <see cref="ConversationState"/> object for the conversation.
-        /// </summary>
-        /// <value>The <see cref="ConversationState"/> object.</value>
         public ConversationState ConversationState { get; }
 
-        /// <summary> Gets the IStatePropertyAccessor{T} name used for the DialogState accessor. </summary>
         public static string DialogStateName { get; } = $"{nameof(PictureBotAccessors)}.DialogState";
 
-        /// <summary> Gets or sets the IStatePropertyAccessor{T} for DialogState. </summary>
         public IStatePropertyAccessor<DialogState> DialogStateAccessor { get; set; }
     }
 }
@@ -503,9 +453,10 @@ This PictureBot will be organized in the following way:
 * **Dialogs** - the business logic for editing the models
 * **Responses** - classes which define the outputs to the users
 * **Models** - the objects to be modified
+@@@
 
 1. Create two new folders "**Responses**" and "**Models**" within your project. (Hint: You can right-click on the project and select "Add->Folder")
-@@@
+
 
 ##### Dialogs
 
@@ -549,39 +500,13 @@ using Microsoft.PictureBot;
 1. [ ] Replace the **PictureBot** class with the following:
 
  ```csharp
- /// <summary>
- /// Represents a bot that processes incoming activities.
- /// For each user interaction, an instance of this class is created and the OnTurnAsync method is called.
- /// This is a Transient lifetime service.  Transient lifetime services are created
- /// each time they're requested. For each Activity received, a new instance of this
- /// class is created. Objects that are expensive to construct, or have a lifetime
- /// beyond the single turn, should be carefully managed.
- /// For example, the <see cref="MemoryStorage"/> object and associated
- /// <see cref="IStatePropertyAccessor{T}"/> object are created with a singleton lifetime.
- /// </summary>
- /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1"/>
- /// <summary>Contains the set of dialogs and prompts for the picture bot.</summary>
  public class PictureBot : ActivityHandler
  {
      private readonly PictureBotAccessors _accessors;
-     // Initialize LUIS Recognizer
 
      private readonly ILogger _logger;
      private DialogSet _dialogs;
 
-     /// <summary>
-     /// Every conversation turn for our PictureBot will call this method.
-     /// There are no dialogs used, since it's "single turn" processing, meaning a single
-     /// request and response. Later, when we add Dialogs, we'll have to navigate through this method.
-     /// </summary>
-     /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
-     /// for processing this conversation turn. </param>
-     /// <param name="cancellationToken">(Optional) A <see cref="CancellationToken"/> that can be used by other objects
-     /// or threads to receive notice of cancellation.</param>
-     /// <returns>A <see cref="Task"/> that represents the work queued to execute.</returns>
-     /// <seealso cref="BotStateSet"/>
-     /// <seealso cref="ConversationState"/>
-     /// <seealso cref="IMiddleware"/>
      public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken =    default(CancellationToken))
      {
          if (turnContext.Activity.Type is "message")
@@ -600,12 +525,7 @@ using Microsoft.PictureBot;
              }
          }
      }
-     /// <summary>
-     /// Initializes a new instance of the <see cref="PictureBot"/> class.
-     /// </summary>
-     /// <param name="accessors">A class containing <see cref="IStatePropertyAccessor{T}"/> used to manage state.</param>
-     /// <param name="loggerFactory">A <see cref="ILoggerFactory"/> that is hooked to the Azure App Service provider.</param>
-     /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1#windows-eventlog-provider"/>
+
      public PictureBot(PictureBotAccessors accessors, ILoggerFactory loggerFactory /*, LuisRecognizer recognizer*/)
      {
          if (loggerFactory == null)
@@ -623,10 +543,6 @@ using Microsoft.PictureBot;
          _dialogs = new DialogSet(_accessors.DialogStateAccessor);
 
          // This array defines how the Waterfall will execute.
-         // We can define the different dialogs and their steps here
-         // allowing for overlap as needed. In this case, it's fairly simple
-         // but in more complex scenarios, you may want to separate out the different
-         // dialogs into different files.
          var main_waterfallsteps = new WaterfallStep[]
          {
              GreetingAsync,
@@ -641,6 +557,7 @@ using Microsoft.PictureBot;
          // Add named dialogs to the DialogSet. These names are saved in the dialog state.
          _dialogs.Add(new WaterfallDialog("mainDialog", main_waterfallsteps));
          _dialogs.Add(new WaterfallDialog("searchDialog", search_waterfallsteps));
+
          // The following line allows us to use a prompt within the dialogs
          _dialogs.Add(new TextPrompt("searchPrompt"));
      }
