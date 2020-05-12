@@ -48,9 +48,9 @@ In this lab we will explore the QnA Maker for creating bots that connect to a pr
 
 1. [ ] For the name, type **Microsoft FAQs**
 
-1. [ ] For the file, select **Add file**, browse to the **code/surface-pro-4-user-guide-EN.pdf** file
+1. [ ] For the file, select **Add file**, browse to the **Labfiles/lab5-QnA/code/surface-pro-4-user-guide-EN.pdf** file
 
-1. [ ] For the file, select **Add file**, browse to the **code/Manage Azure Blob Storage** file
+1. [ ] For the file, select **Add file**, browse to the **Labfiles/lab5-QnA/code/Manage Azure Blob Storage** file
 @@@warning
 **Note** You can find out more about the supported file types and data sources [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/concepts/data-sources-supported)
 @@@
@@ -102,35 +102,22 @@ In this lab we will explore the QnA Maker for creating bots that connect to a pr
 
 1. [ ] Open the .sln solution file with Visual Studio 2019
 
-1. [ ] Open the **Startup.cs** file, you will notice nothing special has been added here
+1. [ ] Open the **Startup.cs** file, you will notice nothing the QnA service added as a singleton
 
-1. [ ] Open the **Bots/{BotName}.cs** file, notice this is where the QnA Maker is being initalized:
-
- ```csharp
-var qnaMaker = new QnAMaker(new QnAMakerEndpoint
-{
-    KnowledgeBaseId = _configuration["QnAKnowledgebaseId"],
-    EndpointKey = _configuration["QnAAuthKey"],
-    Host = GetHostname()
-},
-null,
-httpClient);
+```csharp
+services.AddSingleton<IBotServices, BotServices>();
  ```
 
- and then called:
+1. [ ] Open the **BotServices.cs** file, notice this is where the QnA Maker is being initalized:
 
  ```csharp
-var response = await qnaMaker.GetAnswersAsync(turnContext);
-if (response != null && response.Length > 0)
+qnaMakerService = new QnAMaker(new QnAMakerEndpoint
 {
-    await turnContext.SendActivityAsync(MessageFactory.Text(response[0].Answer), cancellationToken);
-}
-else
-{
-    await turnContext.SendActivityAsync(MessageFactory.Text("No QnA Maker answers were found."), cancellationToken);
-}
+    KnowledgeBaseId = configuration["QnAKnowledgebaseId"],
+    EndpointKey = configuration["QnAAuthKey"],
+    Host = GetHostname(configuration["QnAEndpointHostName"])
+});
  ```
-
  As you can see, it is very simple to add a generated QnA Maker to your own bots with just a few lines of code.
 
 ##### Going Further
