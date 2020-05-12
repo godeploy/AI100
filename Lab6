@@ -50,17 +50,19 @@ Creating a LUIS service in the portal is optional, as LUIS provides you with a "
 
 1. [ ] Select **Create**
 
+1. [ ] Select your resource group
+
 1. [ ] For the name, type **{YOURINIT}luisbot**
 
-1. [ ] Select your subscription and and location similar to your resource group
+1. [ ] Select an authoring location similar to your resource group
 
-1. [ ] For the pricing tier, select **F0**
+1. [ ] For the authoring pricing tier, select **F0**
 
-1. [ ] Select your resources group
+1. [ ] For the prediction location, select a location similar to your resource group
 
-1. [ ] For the runtime location, select a location similar to your resource group
+1. [ ] For the prediction pricing, select **F0**
 
-1. [ ] For the runtime pricing, select **F0**
+1. [ ] Select **Review + create**
 
 1. [ ] Select **Create**
 
@@ -87,20 +89,27 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
 
 1. [ ] Sign in using your Organization or Microsoft account. This should be the same account that you used to create the LUIS key in the previous section.
 
+1. [ ] If this is your first time, you will be asked to agree with service terms of use and select your country.
+
+1. [ ] If this is your first time, you will be asked create a new resource or continue using a trial key. Choose to continue to use **trial key**.
+
 1. [ ] Select **Create a LUIS app now**. You should be redirected to a list of your LUIS applications.  If prompted, select **Migrate Later**.  
 
-1. [ ] If this is your first time, you will be asked to agree with service terms of use and select your county.
+1. [ ] Finally confirm your settings and you will be forwarded to the LUIS App page.
 
-  - On next step you need to chose recommended option and link your Azure account with LUIS.
-  
-  - Finally confirm your settings and you will be forwarded to the LUIS App page.
+1. [ ] Select **Create a LUID app now**
+
+1. [ ] Choose your Subscription
+
+1. [ ] Choose the authoring resource created in the previous section
+
 @@@warning
-**Note**: Notice that there is also an "Import App" next to the "New App" button on [the current page](https://www.luis.ai/applications).  After creating your LUIS application, you have the ability to export the entire app as JSON and check it into source control.  This is a recommended best practice, so you can version your LUIS models as you version your code.  An exported LUIS app may be re-imported using that "Import App" button.  If you fall behind during the lab and want to cheat, you can select the "Import App" button and import the [LUIS model](./code/LUIS/PictureBotLuisModel.json).
+**Note**: Notice that there is also an "Import new app" next to the "Create new app" button on [the current page](https://www.luis.ai/applications).  After creating your LUIS application, you have the ability to export the entire app as JSON and check it into source control.  This is a recommended best practice, so you can version your LUIS models as you version your code.  An exported LUIS app may be re-imported using that "Import App" button.  If you fall behind during the lab and want to cheat, you can select the "Import App" button and import the [LUIS model](./code/LUIS/PictureBotLuisModel.json).
 @@@
 
 1. [ ] From the main page, select the **Create new app** button
 
-1. [ ] Type a name, and select **Done**.  Close the "How to create an effective LUIS app" dialog.
+1. [ ] Type a name, select the prediction resource created in the previos section, and select **Done**.  Close the "How to create an effective LUIS app" dialog.
 
  ![Screenshot](https://godeployblob.blob.core.windows.net//labguideimages/AI-100/All-Labs/d5d8f539-cd9e-49da-9566-cc1a060fc88a.png)
 
@@ -145,7 +154,6 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
  Just as we did for Greetings, let's add some sample utterances (words/phrases/sentences the user might say when talking to the bot).  People might search for pictures in many ways.  Feel free to use some of the utterances below, and add your own wording for how you would ask a bot to search for pictures.
 
   - Find outdoor pics
-  
   - Are there pictures of a train?
   - Find pictures of food.
   - Search for photos of kids playing
@@ -180,8 +188,7 @@ Let's look at how we can use LUIS to add some natural language capabilities. LUI
      - Print this picture
      - I would like to order prints
      - Can I get an 8x10 of that one
-     <br/>
-  - Order wallets
+     - Order wallets
 
  When choosing utterances, it can be helpful to use a combination of questions, commands, and "I would like to..." formats.
 
