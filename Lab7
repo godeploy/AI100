@@ -15,17 +15,17 @@
 1. [ ] If not already open, open your **PictureBot** solution in Visual Studio
 
 @@@warning
-**NOTE** You can also start with the **{GitHubPath}/Lab7-Integrate_LUIS/code/Starter/PictureBot/PictureBot.sln** solution if you did not start from Lab 1.
-@@@
+**NOTE** You can also start with the **C:\LabFiles\Lab7-Integrate_LUIS\code\Starter\PictureBot\PictureBot.sln** solution if you did not start from Lab 1.
 
 Be sure to replace all the app settings values
+@@@
 
 1. [ ] Open **Startup.cs** and locate the `ConfigureServices` method. We'll add LUIS here by adding an additional service for LUIS after creating and registering the state accessors.
 
 Below:
 
 ```csharp
-services.AddSingleton((Func<IServiceProvider, PictureBotAccessors>)(sp =>
+services.AddSingleton<PictureBotAccessors>(sp =>
 {
     .
     .
@@ -72,7 +72,7 @@ services.AddSingleton(sp =>
 
 #### Lab 7.2: Adding LUIS to PictureBot's MainDialog
 
-1. [ ] Open **PictureBot.cs.**. The first thing you'll need to do is initialize the LUIS recognizer, similar to how you did for `PictureBotAccessors`. Below the commented line `// Initialize LUIS Recognizer`, add the following:
+1. [ ] Open **PictureBot.cs.**. The first thing you'll need to do is initialize the LUIS recognizer, similar to how you did for `PictureBotAccessors`. Add to the PictureBot class:
 
 ```csharp
 private LuisRecognizer _recognizer { get; } = null;
@@ -86,7 +86,9 @@ public PictureBot(PictureBotAccessors accessors, ILoggerFactory loggerFactory /*
 
 Now, maybe you noticed we had this commented out in your previous labs, maybe you didn't. You have it commented out now, because up until now, you weren't calling LUIS, so a LUIS recognizer didn't need to be an input to PictureBot. Now, we are using the recognizer.
 
-1. [ ] Uncomment the input requirement (parameter `LuisRecognizer recognizer`), and add the following line below `// Add instance of LUIS Recognizer`:
+1. [ ] Uncomment the input requirement (parameter `LuisRecognizer recognizer`), 
+
+1. [ ] Add the following line below `// Add instance of LUIS Recognizer`:
 
 ```csharp
 _recognizer = recognizer ?? throw new ArgumentNullException(nameof(recognizer));
